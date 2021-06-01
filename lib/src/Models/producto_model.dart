@@ -7,7 +7,9 @@ class Producto {
         this.precio,
         this.urlFoto,
         this.cantidad,
-        this.observaciones
+        this.observaciones,
+        this.entregado,
+        this.eliminar
     });
 
     int idProducto;
@@ -18,6 +20,8 @@ class Producto {
     String urlFoto;
     int cantidad;
     String observaciones;
+    bool entregado;
+    bool eliminar;
 
     factory Producto.fromJson(Map<String, dynamic> json) => Producto(
         idProducto: json["idProducto"],
@@ -27,7 +31,9 @@ class Producto {
         precio: json["precio"],
         urlFoto: json["urlFoto"],
         cantidad: json["cantidad"],
-        observaciones : json["observaciones"]
+        observaciones : json["observaciones"],
+        entregado : json["entregado"],
+        eliminar : false,
     );
 
     Map<String, dynamic> toJson() => {
@@ -38,7 +44,9 @@ class Producto {
         "precio": precio,
         "urlFoto": urlFoto,
         "cantidad" : cantidad,
-        "observaciones" : observaciones
+        "observaciones" : observaciones,
+        "entregado" : entregado,
+        "aliminar" : eliminar,
     };
 }
 

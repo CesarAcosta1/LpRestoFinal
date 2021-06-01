@@ -17,8 +17,8 @@ class PadrePage extends StatefulWidget {
 
 Size size;
 
-var currentIndex = 0;
-PageController pageController = PageController(initialPage: 0);
+var currentIndex = 2;
+PageController pageController = PageController(initialPage: 2);
 
 var idPedido;
 var clienteSeleccionado;

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lp_resto_final_2/custom_icons.dart';
 import 'package:lp_resto_final_2/pages/padrePage.dart';
-import 'package:lp_resto_final_2/services/pedidos_service.dart';
 import 'package:lp_resto_final_2/src/models/pedidosModel.dart';
-import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,6 +16,9 @@ class PedidosEnCursoPage extends StatefulWidget {
 
 Size size;
 
+List<ParaEliminar> eliminar = [
+  ParaEliminar(index: 0,eliminar: false),
+];
 
 class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
 
@@ -71,8 +72,9 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
                       } else {
                          streamPedidos = pedidosFromJson(snapshot.data.body);
                         return Column(
-                          children: List.generate(streamPedidos.length, (index){
-                              return pedidosEnCursoWidget(streamPedidos[index],streamPedidos[index].idPedido);
+                          children: List.generate(
+                            streamPedidos.length, (i){
+                              return pedidosEnCursoWidget(streamPedidos[i]);
                             }
                           ),
                         );
@@ -91,12 +93,11 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
     );
   }
 
-  Widget pedidosEnCursoWidget(pedido,int idPedi) {
+  Widget pedidosEnCursoWidget(Pedidos pedido) {
 
     double _total = 0;
-
     for (var i = 0; i < pedido.productos.length; i++) {
-      _total += pedido.productos[i].precio; 
+      _total += pedido.productos[i].precio * pedido.productos[i].cantidad; 
     }
 
     var limites = [5,10];
@@ -108,12 +109,10 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
     if (diferencia > 0 && diferencia <= limites[0]) {
       estadoColor = colorsLimites[0];
     }
-
-    if (diferencia > limites[0] && diferencia <= limites[1]) {
+    else if (diferencia > limites[0] && diferencia <= limites[1]) {
       estadoColor = colorsLimites[1];
     }
-
-    if (diferencia > limites[1] ) {
+    else {
       estadoColor = colorsLimites[2];
     }
 
@@ -218,241 +217,290 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
         ],
       ),
       onTap: () {
-
+        bool eliminarElementos = false;
         TextStyle _style = TextStyle(
           fontSize: 14
         );
 
-        int _total = 0;
+        eliminar = [];
 
         for (var i = 0; i < pedido.productos.length; i++) {
-          _total += pedido.productos[i].cantidad * pedido.productos[i].precio; 
+          eliminar.add(ParaEliminar(index: i,eliminar: false)); 
         }
+
 
         showDialog(
           context: context,          
-          builder: (_) => Center( 
-            child: Container( 
-              width: size.width * 0.95,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          color: Colors.red,
-                          child: Icon(Icons.close,color: Colors.white,),
+          builder: (_) => StatefulBuilder(
+            builder: (context, setState) {
+
+              return AlertDialog(
+                insetPadding: EdgeInsets.zero,
+                titlePadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.zero,
+                content: Container(
+                  width: size.width * 0.95,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            color: Colors.red,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
                         ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
                       ),
-                    ),
-                    Align(
-                      child: Center(
-                        child: Text(
-                          'Destalle del Pedido',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold
+                      Align(
+                        child: Center(
+                          child: Text(
+                            'Destalle del Pedido',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(pedido.tipo, style: _style.copyWith(fontWeight: FontWeight.bold),),
-                        SizedBox(width: 10),
-                        Text(pedido.nombreCliente, style: _style,)
-                      ],
-                    ),
-                    SizedBox(height: 5,),
-                    Center(
-                      child: Text(
-                        "(Pagado)",
-                        style: _style.copyWith(color: Colors.grey),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(pedido.tipo, style: _style.copyWith(fontWeight: FontWeight.bold),),
+                          SizedBox(width: 10),
+                          Text(pedido.nombreCliente, style: _style,)
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 5,),
-                    Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.ac_unit),
-                              Text("001",style: _style,)
-                            ],
-                          )
+                      SizedBox(height: 5,),
+                      Center(
+                        child: Text(
+                          "(Pagado)",
+                          style: _style.copyWith(color: Colors.grey),
                         ),
-                        Expanded(
-                          child: Center(
+                      ),
+                      SizedBox(height: 5,),
+                      Row(
+                        children: [
+                          Container(
+                            width: 80,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.ac_unit),
-                                Text("Alejandro",style: _style,)
+                                Text("001",style: _style,)
                               ],
-                            ),
-                          )
-                        ),
-                        Container(
-                          width: 120,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.ac_unit),
-                              Text("Auto",style: _style,)
-                            ],
-                          )
-                        )
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          child: Center(
-                            child: Text('Cant.',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16))
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Text('Producto',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16)),
-                          )
-                        ),
-                        Container(
-                          width: 120,
-                          child: Text('SubTotal',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16)),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Column(
-                      children: List.generate(pedido.productos.length, (i) {
-                        String _descript = pedido.productos[i].producto.toString();
-                        String _observa = pedido.productos[i].observaciones;
-                        return Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 80,
-                                  child: Center(
-                                    child: Text(
-                                      pedido.productos[i].cantidad.toString(),
-                                      style: _style,
-                                    )
-                                  ),
-                                ),
-                                Expanded(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: DefaultTextStyle.of(context).style,
-                                      children:  <TextSpan>[
-                                        TextSpan(text: '$_descript,'),
-                                        TextSpan(text: '$_observa', style: TextStyle(fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  ),
-                                  // child: Text(
-                                  //   pedido.productos[i].producto ,
-                                  //   style: _style,
-                                  // )
-                                ),
-                                Container(
-                                  width: 120,
-                                  child: Text(
-                                    nf.format(pedido.productos[i].precio * pedido.productos[i].cantidad).toString(),
-                                    style: _style,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 10,)
-                          ],
-                        );
-                      }),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              'TOTAL',
-                              style: _style.copyWith(fontWeight: FontWeight.bold,color: Colors.red),
                             )
                           ),
-                        ),
-                        Expanded(
-                          child: Container()
-                        ),
-                        Container(
-                          width: 120,
-                          child: Text(
-                            nf.format(_total).toString(),
-                            //nf.format(pedido.productos[i].precio * pedido.productos[i].cantidad).toString(),
-                            style: _style.copyWith(color: Colors.red),
+                          Expanded(
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.ac_unit),
+                                  Text("Alejandro",style: _style,)
+                                ],
+                              ),
+                            )
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 15,),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }, 
-                            child: Text("Cancelar")
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red
-                            ),
-                            child: Text("Añadir +"),
-                            onPressed: () {
-                              pageController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
-                              Navigator.of(context).pop();
-                              idPedido = idPedi;
-                              clienteSeleccionado = pedido.nombreCliente;
-                            }, 
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red
-                            ),
-                            onPressed: () {}, 
-                            child: Text("Entregar")
+                          Container(
+                            width: 120,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.ac_unit),
+                                Text("Auto",style: _style,)
+                              ],
+                            )
                           )
                         ],
                       ),
-                    )
-                  ],
+                      Divider(),
+                      Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            child: Center(
+                              child: Text('Cant.',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16))
+                            ),
+                          ),
+                          Container(
+                            width: 150,
+                            color: Colors.blue,
+                            child: Text('Producto',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16)),
+                          ),
+                          Container(
+                            color: Colors.green,
+                            width: 70,
+                            child: Text('SubTotal',style: _style.copyWith(fontWeight: FontWeight.bold,fontSize: 16)),
+                          ),
+                          Container(
+                            child: Row(
+                              children: [
+                                Text("Todos"),
+                                Checkbox(
+                                  value: true, 
+                                  onChanged: (value) {
+                                  
+                                  },
+                                )
+                              ],
+                            ),
+                          )
+                          // GestureDetector(
+                          //   child: Container(
+                          //     width: 40,
+                          //     child: Center(child: (eliminarElementos) ? Icon(Icons.delete_forever,color: Colors.red) : Icon(Icons.delete)),
+                          //   ),
+                          //   onTap: () {
+                          //     pedido.productos.removeWhere((productos) => productos.eliminar == true);
+                          //     eliminarElementos = false;
+                          //     setState(() {
+
+                          //     });
+                          //   },
+                          // )
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        height: size.height * 0.3,  
+                        child: ListView(
+                          children: List.generate(pedido.productos.length, (i) {
+                            String _descript = pedido.productos[i].producto.toString();
+                            String _observa = pedido.productos[i].observaciones;
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    child: Center(
+                                      child: Text(
+                                        pedido.productos[i].cantidad.toString(),
+                                        style: _style,
+                                      )
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: DefaultTextStyle.of(context).style,
+                                        children:  <TextSpan>[
+                                          TextSpan(text: '$_descript,'),
+                                          TextSpan(text: '$_observa', style: TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    child: Text(
+                                      nf.format(pedido.productos[i].precio * pedido.productos[i].cantidad).toString(),
+                                      style: _style,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    child: Container(
+                                      //color: Colors.blue,
+                                      width: 40,
+                                      child: Center(
+                                        child: Icon(Icons.delete,color: (pedido.productos[i].eliminar) ? Colors.red : Colors.grey),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      eliminarElementos = false;
+                                      pedido.productos[i].eliminar = !pedido.productos[i].eliminar ;
+
+                                      for (var x = 0; x < pedido.productos.length; x++) {
+                                        //print(eliminar[x].index.toString() + ' : ' + eliminar[x].eliminar.toString());
+                                        if (pedido.productos[x].eliminar) {
+                                          eliminarElementos = true;
+                                        }
+                                      }                                
+
+                                      setState(() {
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            child: Center(
+                              child: Text(
+                                'TOTAL',
+                                style: _style.copyWith(fontWeight: FontWeight.bold,color: Colors.red),
+                              )
+                            ),
+                          ),
+                          Expanded(
+                            child: Container()
+                          ),
+                          Container(
+                            width: 120,
+                            child: Text(
+                              nf.format(_total).toString(),
+                              //nf.format(pedido.productos[i].precio * pedido.productos[i].cantidad).toString(),
+                              style: _style.copyWith(color: Colors.red),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 15,),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }, 
+                              child: Text("Cancelar")
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red
+                              ),
+                              child: Text("Añadir +"),
+                              onPressed: () {
+                                pageController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                                Navigator.of(context).pop();
+                                idPedido = pedido.idPedido;
+                                clienteSeleccionado = pedido.nombreCliente;
+                              }, 
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red
+                              ),
+                              onPressed: () {}, 
+                              child: Text("Entregar")
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
+              );
+            },
           )
         );
       },
@@ -543,4 +591,13 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
       }
     );
   }
+}
+
+class ParaEliminar {
+
+  int index;
+  bool eliminar;
+
+  ParaEliminar({this.index,this.eliminar});
+
 }
