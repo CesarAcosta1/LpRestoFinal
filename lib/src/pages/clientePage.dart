@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 class Clientepage extends StatefulWidget {
-  Clientepage({Key key}) : super(key: key);
 
   @override
   _ClientepageState createState() => _ClientepageState();

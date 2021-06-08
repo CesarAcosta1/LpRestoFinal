@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lp_resto_final_2/pages/manuPage.dart';
-import 'package:lp_resto_final_2/pages/padrePage.dart';
-import 'package:lp_resto_final_2/pages/pruebas.dart';
 import 'package:lp_resto_final_2/services/menu_service.dart';
 import 'package:lp_resto_final_2/services/pedidos_service.dart';
+import 'package:lp_resto_final_2/src/pages/manuPage.dart';
+import 'package:lp_resto_final_2/src/pages/padrePage.dart';
+import 'package:lp_resto_final_2/src/pages/pedidosDetallesPage.dart';
+import 'package:lp_resto_final_2/src/pages/pruebas.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
@@ -27,9 +28,10 @@ class MyApp extends StatelessWidget {
           fontFamily: GoogleFonts.montserrat().fontFamily
         ),
         routes: {
-          'Menu': (BuildContext c) => MenuPage(),
-          'pruebas': (BuildContext c) => Pruebas(),
-          'Padre': (BuildContext c) => PadrePage(),
+          'Menu'          : (BuildContext c) => MenuPage(),
+          'pruebas'       : (BuildContext c) => Pruebas(),
+          'Padre'         : (BuildContext c) => PadrePage(),
+          'PedidoDetalle' : (BuildContext c) => PedidosDetalles(),
         },
       ),
     );

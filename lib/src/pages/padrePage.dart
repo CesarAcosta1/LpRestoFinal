@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lp_resto_final_2/custom_icons.dart';
-import 'package:lp_resto_final_2/pages/clientePage.dart';
-import 'package:lp_resto_final_2/pages/manuPage.dart';
-import 'package:lp_resto_final_2/pages/pedidosEnCursoPage.dart';
 import 'package:lp_resto_final_2/services/menu_service.dart';
+import 'package:lp_resto_final_2/src/models/pedidosModel.dart';
+import 'package:lp_resto_final_2/src/pages/clientePage.dart';
+import 'package:lp_resto_final_2/src/pages/manuPage.dart';
+import 'package:lp_resto_final_2/src/pages/pedidosEnCursoPage.dart';
 import 'package:provider/provider.dart';
 
 class PadrePage extends StatefulWidget {
@@ -24,6 +25,8 @@ var idPedido;
 var clienteSeleccionado;
 bool menuView = false;
 var menuService;
+
+Pedidos pedidoSeleccionado;
 
 class _PadrePageState extends State<PadrePage> {
   @override

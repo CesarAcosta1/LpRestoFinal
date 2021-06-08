@@ -24,8 +24,27 @@ class _PruebasState extends State<Pruebas> {
       ),
       body: Column(
         children: [
-          Center(
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: Colors.red,
+            )
+          ),
+          Expanded(
+            flex: 8,
+            child: Container(
+              color: Colors.blue,
+              child: ListView(
+                children: List.generate(10, (index) => Container(height: 50,width: 50,color: Colors.white,margin: EdgeInsets.all(10),)),
+              ),
 
+            )
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.black,
+            )
           )
         ],
       ),

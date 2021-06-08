@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:lp_resto_final_2/custom_icons.dart';
-import 'package:lp_resto_final_2/pages/padrePage.dart';
 import 'package:lp_resto_final_2/services/menu_service.dart';
 import 'package:lp_resto_final_2/src/Models/clienteModel.dart';
 import 'package:lp_resto_final_2/src/Models/pedidosEnviar_model.dart';
 import 'package:lp_resto_final_2/src/Models/producto_model.dart';
+import 'package:lp_resto_final_2/src/pages/padrePage.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:http/http.dart' as http;
@@ -46,67 +46,66 @@ class _MenuPageState extends State<MenuPage> {
 
   return Stack(
     children: [
-    Container(
-      height: size.height * 0.83,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        //borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 15),
-              padding: EdgeInsets.symmetric(horizontal: 2.5),
-              width: double.infinity,
-              height: 35,
-              color: Colors.white,
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: menuService.length,
-                itemBuilder: (context, index) => categoriaCard(index,menuService[index].categoria),
+      Container(
+        height: size.height * 0.83,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          //borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 2.5),
+                width: double.infinity,
+                height: 35,
+                color: Colors.white,
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: menuService.length,
+                  itemBuilder: (context, index) => categoriaCard(index,menuService[index].categoria),
+                ),
               ),
-            ),
-            Container(
-              height: size.height * 0.72,
-              width: size.width,
-              color: Colors.white,
-              child: ScrollablePositionedList.builder(
-                //physics: BouncingScrollPhysics(),
-                itemCount: menuService.length,
-                itemScrollController: itemScrollController,
-                itemPositionsListener: itemPositionsListener,
-                itemBuilder: (context, index) => Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                        width: 400,
-                        child: Text(menuService[index].categoria,
-                          style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left,
+              Container(
+                height: size.height * 0.72,
+                width: size.width,
+                color: Colors.white,
+                child: ScrollablePositionedList.builder(
+                  //physics: BouncingScrollPhysics(),
+                  itemCount: menuService.length,
+                  itemScrollController: itemScrollController,
+                  itemPositionsListener: itemPositionsListener,
+                  itemBuilder: (context, index) => Container(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          width: 400,
+                          child: Text(menuService[index].categoria,
+                            style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                      ),
-                      Column(
-                        children: List.generate(menuService[index].productos.length, (i) => cardProduct(menuService[index].productos[i],false)),
-                      ),
-                      SizedBox(height: 15)
-                    ],
+                        Column(
+                          children: List.generate(menuService[index].productos.length, (i) => cardProduct(menuService[index].productos[i],false)),
+                        ),
+                        SizedBox(height: 15)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 30,)
-          ],
+              SizedBox(height: 30,)
+            ],
+          ),
         ),
       ),
-    ),
       drowerBottom(),
     ],
   ); 
-
 }
 
 Widget categoriaCard(int index,nombre){
@@ -298,20 +297,20 @@ Widget categoriaCard(int index,nombre){
                                 },
                                 child: Text(
                                   'Agregar'
-                                ),
-                              ),
-                            ],
+                                )
+                              )
+                            ]
                           );
-                        },
+                        }
                       );
                     }
                   }
-                ),
+                )
               ) 
-            ],
-          ),
-        ],
-      ),
+            ]
+          )
+        ]
+      )
     );
   }
 
@@ -498,13 +497,11 @@ Widget categoriaCard(int index,nombre){
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  (clienteSeleccionado == null) ? ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Colors.green
                     ),
                     onPressed: () {
-                      //enviarPedidos();
-                      //Navigator.push(context,MaterialPageRoute(builder: (context) => PagoFacturacionPage(data: data,)),);
 
                         List<String> tipos = ['Mostrador','Mesa','Auto','Delivery',];
                         String dropdownValue = tipos[0];
@@ -740,7 +737,7 @@ Widget categoriaCard(int index,nombre){
                     child: Text(
                       'Nuevo Pedido',style: TextStyle(fontSize: 16),
                     )
-                  ),
+                  ) : Container(),
                   SizedBox(width: 20,),
                   (clienteSeleccionado != null) ? ElevatedButton(
                     style: ElevatedButton.styleFrom(

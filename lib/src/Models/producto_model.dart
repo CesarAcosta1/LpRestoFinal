@@ -1,3 +1,4 @@
+
 class Producto {
     Producto({
         this.idProducto,
@@ -9,7 +10,7 @@ class Producto {
         this.cantidad,
         this.observaciones,
         this.entregado,
-        this.eliminar
+        this.select
     });
 
     int idProducto;
@@ -21,7 +22,7 @@ class Producto {
     int cantidad;
     String observaciones;
     bool entregado;
-    bool eliminar;
+    bool select;
 
     factory Producto.fromJson(Map<String, dynamic> json) => Producto(
         idProducto: json["idProducto"],
@@ -33,7 +34,7 @@ class Producto {
         cantidad: json["cantidad"],
         observaciones : json["observaciones"],
         entregado : json["entregado"],
-        eliminar : false,
+        select:  json["select"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -46,7 +47,7 @@ class Producto {
         "cantidad" : cantidad,
         "observaciones" : observaciones,
         "entregado" : entregado,
-        "aliminar" : eliminar,
+        "select" : false,
     };
 }
 
