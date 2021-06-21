@@ -39,7 +39,7 @@ class _PadrePageState extends State<PadrePage> {
       appBar: AppBar(
         leading: Container(
           color: Colors.transparent,
-          child: Icon(CustomIcons.logo,size: 55,),
+          child: Icon(CustomIcons.logo,size: 55),
         ),
         leadingWidth: 80,
         title: Text(

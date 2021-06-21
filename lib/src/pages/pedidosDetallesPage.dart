@@ -186,7 +186,14 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                             margin: EdgeInsets.symmetric(vertical: 5),
                             padding: EdgeInsets.symmetric(vertical: 5),
                             decoration: BoxDecoration(
-                              color: pedidoSeleccionado.productos[i].select == true ? Colors.red[200] : Colors.white,
+                              color: 
+                              pedidoSeleccionado.productos[i].select == true 
+                              ? Colors.red[200] 
+                              : pedidoSeleccionado.productos[i].entregado == true 
+                              ?
+                              Colors.grey 
+                              :
+                              Colors.white,
                               borderRadius: BorderRadius.circular(10)
                             ),
                             child: Row(
@@ -267,7 +274,6 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                               selectProductos = true;
                             }
                             pedidoSeleccionado.productos[i].select = true;
-                            print("Pruebas");
                             setState(() {
                               
                             });
@@ -289,17 +295,10 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                               }
                             }
 
-                            
-                            print(countselect);
-                            print(pedidoSeleccionado.productos.length);
-
                             if (countselect == pedidoSeleccionado.productos.length) {
                               selectProductos = false;
                             }
-
-                            setState(() {
-                              
-                            });
+                            setState(() {});
                           },
                         );
                       }),
@@ -326,17 +325,16 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                         activeColor: Colors.red,
                         inactiveColor: Colors.grey,
                         text: 'Editar',
-                        active: select,
+                        active: selectProductos,
                         onTap: () {
-                          // pedidoSeleccionado.productos.removeWhere((productos) => productos.eliminar == true);
-                          // allSelect = false;
-                          // setState(() {});
                           cantidad = [];
                           for (var a = 0; a < pedidoSeleccionado.productos.length; a++) {
-                              cantidad.add(pedidoSeleccionado.productos[a].cantidad);
-                              controllers.add(TextEditingController(text: pedidoSeleccionado.productos[a].producto + ',' + pedidoSeleccionado.productos[a].observaciones));
+                            cantidad.add(pedidoSeleccionado.productos[a].cantidad);
+                            controllers.add(TextEditingController(text: pedidoSeleccionado.productos[a].producto + ',' + pedidoSeleccionado.productos[a].observaciones));
                           }
-                          editPopPup();
+                          if (selectProductos) {
+                            editPopPup();
+                          }
                         }
                       ),
                       OptionButton(
@@ -352,16 +350,6 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                           clienteSeleccionado = pedidoSeleccionado.nombreCliente;
                         }
                       ),
-                      // OptionButton(
-                      //   icon: Icons.card_giftcard_outlined,
-                      //   activeColor: Colors.black87,
-                      //   inactiveColor: Colors.grey,
-                      //   text: 'Entregar',
-                      //   active: select,
-                      //   onTap: (){
-                      //     print("Pruebas");
-                      //   }
-                      // ),
                       OptionButton(
                         icon: Icons.paid,
                         activeColor: Colors.green,
@@ -465,115 +453,76 @@ class _PedidosDetallesState extends State<PedidosDetalles> {
                       //color: Colors.blue,
                       child: ListView(
                         children: List.generate(pedidoSeleccionado.productos.length, (i) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(vertical: 5),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                    child: TextField(
-                                      controller: controllers[i],   
-                                      decoration: InputDecoration(
-                                        labelText: ''
-                                      ),
-                                      maxLines: null,
-                                    )
-                                  )
-                                ),
-                                Container(
-                                  //padding: EdgeInsets.all(1),
-                                  width: 120,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(width: 1,color: Colors.grey)
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.remove,size: 15,), 
-                                        onPressed: () {
-                                          if( cantidad[i] > 0){
-                                            cantidad[i]--;
-                                            //cambiarPrecio();
-
-                                            if (cantidad[i] == 0) {
-                                              // productList.removeWhere((item) => item.idProducto == pedidoSeleccionado.productos[i].idProducto);
-                                              // pedidoSeleccionado.productos[i].observaciones = '';
-                                            }
-
-                                          }
-                                          setState(() {});
-                                        },
-                                      ),
-                                      Text(
-                                        '${cantidad[i]}',
-                                        style: TextStyle(
-                                          fontSize: 18
+                          if (pedidoSeleccionado.productos[i].select == true) {
+                            
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      child: TextField(
+                                        controller: controllers[i],   
+                                        decoration: InputDecoration(
+                                          labelText: ''
                                         ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.add,size: 15,), 
-                                        onPressed: () {
-                                          cantidad[i] += 1;
-                                          setState(() {});
-                                          print(cantidad[i]);
-                                        },
-                                      ),
-                                    ],
+                                        maxLines: null,
+                                      )
+                                    )
                                   ),
-                                ),
-                                // Expanded(
-                                //   flex: 4,
-                                //   child: Container(
-                                //     margin: EdgeInsets.only(left: 5),
-                                //     //color: Colors.blue,
-                                //     child: Text(nf.format(pedidoSeleccionado.productos[i].precio).toString(),style: _style2),
-                                //   )
-                                // ),
-                                // Expanded(
-                                //   flex: 2,
-                                //   child: Container(
-                                //     child: Align(
-                                //       alignment: Alignment.topCenter,
-                                //       child: Checkbox(
-                                //         value: pedidoSeleccionado.productos[i].eliminar, 
-                                //         onChanged: (value) {
+                                  Container(
+                                    //padding: EdgeInsets.all(1),
+                                    width: 120,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(width: 1,color: Colors.grey)
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.remove,size: 15,), 
+                                          onPressed: () {
+                                            if( cantidad[i] > 0){
+                                              cantidad[i]--;
+                                              //cambiarPrecio();
 
-                                //           pedidoSeleccionado.productos[i].eliminar = !pedidoSeleccionado.productos[i].eliminar;
+                                              if (cantidad[i] == 0) {
+                                                // productList.removeWhere((item) => item.idProducto == pedidoSeleccionado.productos[i].idProducto);
+                                                // pedidoSeleccionado.productos[i].observaciones = '';
+                                              }
 
-                                //           int tselect = 0;
-
-                                //           for (var a = 0; a < pedidoSeleccionado.productos.length; a++) {
-                                //             if (pedidoSeleccionado.productos[a].eliminar) {
-                                //               tselect++;
-                                //             }
-                                //           }
-
-                                //           if(tselect > 0){
-                                //             select = true;
-                                //           } else {
-                                //             select = false;
-                                //           }
-
-                                //           if (tselect == pedidoSeleccionado.productos.length) {
-                                //             allSelect = true;
-                                //           } else {
-                                //             allSelect = false;
-                                //           }
-                                //           setState(() {});
-                                //         },
-                                //       ),
-                                //     ),
-                                //   )
-                                // )
-                              ],
-                            ),
-                          );
+                                            }
+                                            setState(() {});
+                                          },
+                                        ),
+                                        Text(
+                                          '${cantidad[i]}',
+                                          style: TextStyle(
+                                            fontSize: 18
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.add,size: 15,), 
+                                          onPressed: () {
+                                            cantidad[i] += 1;
+                                            setState(() {});
+                                            print(cantidad[i]);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                              return Container();
+                          }
                         }),
                       )
                     )

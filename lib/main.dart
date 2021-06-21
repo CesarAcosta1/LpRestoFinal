@@ -4,6 +4,7 @@ import 'package:lp_resto_final_2/services/menu_service.dart';
 import 'package:lp_resto_final_2/services/pedidos_service.dart';
 import 'package:lp_resto_final_2/src/pages/manuPage.dart';
 import 'package:lp_resto_final_2/src/pages/padrePage.dart';
+import 'package:lp_resto_final_2/src/pages/pagoFacturacionPage.dart';
 import 'package:lp_resto_final_2/src/pages/pedidosDetallesPage.dart';
 import 'package:lp_resto_final_2/src/pages/pruebas.dart';
 import 'package:provider/provider.dart';
@@ -23,15 +24,16 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Pantalla de prueba',
-        initialRoute: 'Padre',
+        initialRoute: 'PagoFacturacion',
         theme: ThemeData(
           fontFamily: GoogleFonts.montserrat().fontFamily
         ),
         routes: {
-          'Menu'          : (BuildContext c) => MenuPage(),
-          'pruebas'       : (BuildContext c) => Pruebas(),
-          'Padre'         : (BuildContext c) => PadrePage(),
-          'PedidoDetalle' : (BuildContext c) => PedidosDetalles(),
+          'Menu'            : (BuildContext c) => MenuPage(),
+          'pruebas'         : (BuildContext c) => Pruebas(),
+          'Padre'           : (BuildContext c) => PadrePage(),
+          'PedidoDetalle'   : (BuildContext c) => PedidosDetalles(),
+          'PagoFacturacion' : (BuildContext c) => PagoFacturacionPage(),
         },
       ),
     );

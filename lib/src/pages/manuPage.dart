@@ -141,176 +141,256 @@ Widget categoriaCard(int index,nombre){
   );
 }
 
-  Container cardProduct(Producto producto,bool isDrawer) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-      width: size.width,
-      //height: 110,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1
-        )
-        // boxShadow: [_shadow]
-      ),
-      child: Column(
-        children: [
-          Row(    
-            crossAxisAlignment: CrossAxisAlignment.start,                
-            children: [
-               Container(
-                height: 100,
-                width: size.width * 0.3,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(19),bottomLeft: Radius.circular(19)),
-                  color: Colors.transparent,
-                ),
-                child: FadeInImage(
-                  placeholder: AssetImage('assets/jar-loading.gif'),
-                  image: NetworkImage(producto.urlFoto),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  width: size.width * 0.50,
+  Widget cardProduct(Producto producto,bool isDrawer) {
+    return GestureDetector(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+        width: size.width,
+        //height: 110,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: Colors.grey,
+            width: 1
+          )
+          // boxShadow: [_shadow]
+        ),
+        child: Column(
+          children: [
+            Row(    
+              crossAxisAlignment: CrossAxisAlignment.start,                
+              children: [
+                 Container(
                   height: 100,
-                  color: Colors.transparent,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          producto.producto,
-                          style: TextStyle(
-                            // fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      SizedBox(height: 3,),
-                      Container(
-                        child: Text(
-                          nf.format(producto.precio).toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5,),
-                      Container(
-                        width: size.width * 0.4,
-                        height: 34,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1,color: Colors.grey)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.remove), 
-                              onPressed: () {
-                                if( producto.cantidad > 0){
-                                  producto.cantidad--;
-                                  cambiarPrecio();
-
-                                  if (producto.cantidad == 0) {
-                                    productList.removeWhere((item) => item.idProducto == producto.idProducto);
-                                    producto.observaciones = '';
-                                  }
-
-                                }
-                                setState(() {});
-                              },
+                  width: size.width * 0.3,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(19),bottomLeft: Radius.circular(19)),
+                    color: Colors.transparent,
+                  ),
+                  child: FadeInImage(
+                    placeholder: AssetImage('assets/jar-loading.gif'),
+                    image: NetworkImage(producto.urlFoto),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    width: size.width * 0.50,
+                    height: 100,
+                    color: Colors.transparent,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: Text(
+                            producto.producto,
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
-                            Text(
-                              '${producto.cantidad}',
-                              style: TextStyle(
-                                fontSize: 20
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(height: 3,),
+                        Container(
+                          child: Text(
+                            nf.format(producto.precio).toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5,),
+                        Container(
+                          width: size.width * 0.4,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(width: 1,color: Colors.grey)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove), 
+                                onPressed: () {
+                                  if( producto.cantidad > 0){
+                                    producto.cantidad--;
+                                    cambiarPrecio();
+
+                                    if (producto.cantidad == 0) {
+                                      productList.removeWhere((item) => item.idProducto == producto.idProducto);
+                                      producto.observaciones = '';
+                                    }
+
+                                  }
+                                  setState(() {});
+                                },
+                              ),
+                              Text(
+                                '${producto.cantidad}',
+                                style: TextStyle(
+                                  fontSize: 20
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.add), 
+                                onPressed: () {
+                                  agregarPedidos(producto);
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(  
+                  child: IconButton(
+                    icon: Icon(Icons.edit,  color: (producto.cantidad > 0) ? Colors.red : Colors.grey),
+                    onPressed: () {
+                      if(producto.cantidad > 0){
+                        textController.text = producto.observaciones;
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Observacion de preparacion'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: textController,
+                                    decoration: InputDecoration(
+                                      labelText: ''
+                                    ),
+                                    maxLines: null,
+                                  )
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: primary
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }, 
+                                  child: Text('Cancelar')
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: primary
+                                  ),
+                                  onPressed: () {
+                                    producto.observaciones = textController.text;
+                                    setState(() {});
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Agregar'
+                                  )
+                                )
+                              ]
+                            );
+                          }
+                        );
+                      }
+                    }
+                  )
+                ) 
+              ]
+            )
+          ]
+        )
+      ),
+      onTap: () {
+        return showDialog(
+          context: context,          
+          builder: (_) => StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                insetPadding: EdgeInsets.zero,
+                titlePadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.zero,
+                backgroundColor: Colors.transparent,
+                content: Container(
+                  width: size.width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10,left: 10),
+                              height: 120,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(19),bottomLeft: Radius.circular(19)),
+                                color: Colors.transparent,
+                              ),
+                              child: FadeInImage(
+                                placeholder: AssetImage('assets/jar-loading.gif'),
+                                image: NetworkImage(producto.urlFoto),
+                                fit: BoxFit.fill,
                               ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.add), 
-                              onPressed: () {
-                                agregarPedidos(producto);
-                                setState(() {});
-                              },
-                            ),
-                          ],
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10,right: 10),
+                              height: 120,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(19),bottomRight: Radius.circular(19)),
+                                border: Border.all(width: 1,color: Colors.grey)
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(producto.producto),
+                                  Text(nf.format(producto.precio).toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                            )
+                          )
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 18),
+                            children: <TextSpan>[
+                              TextSpan(text: 'Descripción: '),
+                              TextSpan(text: producto.descripcion,style: TextStyle(fontWeight: FontWeight.normal)),
+                            ],
+                          ),
                         ),
                       )
                     ],
                   ),
-                ),
-              ),
-              Container(  
-                child: IconButton(
-                  icon: Icon(Icons.edit,  color: (producto.cantidad > 0) ? Colors.red : Colors.grey),
-                  onPressed: () {
-                    if(producto.cantidad > 0){
-                      textController.text = producto.observaciones;
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Observacion de preparacion'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: textController,
-                                  decoration: InputDecoration(
-                                    labelText: ''
-                                  ),
-                                  maxLines: null,
-                                )
-                              ],
-                            ),
-                            actions: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: primary
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }, 
-                                child: Text('Cancelar')
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: primary
-                                ),
-                                onPressed: () {
-                                  producto.observaciones = textController.text;
-                                  setState(() {});
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Agregar'
-                                )
-                              )
-                            ]
-                          );
-                        }
-                      );
-                    }
-                  }
                 )
-              ) 
-            ]
+              );
+            },
           )
-        ]
-      )
+        );
+      },
     );
   }
 

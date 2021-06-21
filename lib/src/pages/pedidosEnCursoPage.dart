@@ -71,7 +71,7 @@ class _PedidosEnCursoPageState extends State<PedidosEnCursoPage> {
                           ),
                         );
                       } else {
-                         streamPedidos = pedidosFromJson(snapshot.data.body);
+                        streamPedidos = pedidosFromJson(snapshot.data.body);
                         return Column(
                           children: List.generate(
                             streamPedidos.length, (i){
